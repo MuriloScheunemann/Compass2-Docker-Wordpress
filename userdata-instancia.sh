@@ -1,4 +1,3 @@
-# Script de User-data para fazer a AMI - que vai ser usada nas instancias do Autoscaling(LaunchTemplate)
 #!/bin/bash
 # Instalar Docker-CE ( Container Engine): 
 sudo yum update
@@ -23,10 +22,12 @@ services:\n
     restart: always\n
     ports:\n
       - 80:80\n
+    environment:\n
+      WORDPRESS_DB_HOST: Endpoint_RDS\n
+      WORDPRESS_DB_USER: usuario\n
+      WORDPRESS_DB_PASSWORD: senha\n
+      WORDPRESS_DB_NAME: nome_BD\n
     volumes:\n
-      - /home/ec2-user/efs:/var/www/html \n
-    env_file:\n
-      - /home/ec2-user/efs/wp.env\n
+      - /home/ec2-user/efs:/var/www/html\n
 " | sudo tee /home/ec2-user/docker-compose/docker-compose.yml
-# Remove linhas em branco do arquivo
-sudo sed -i '/^$/d' docker-compose.yml
+sudo sed -i '/^$/d' /home/ec2-user/docker-compose/docker-compose.yml

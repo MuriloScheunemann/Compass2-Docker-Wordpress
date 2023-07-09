@@ -1,4 +1,3 @@
-# Script de user-data para o Launch Template do AutoScaling
 #!/bin/bash
 sudo yum update -y
 sudo systemctl start docker

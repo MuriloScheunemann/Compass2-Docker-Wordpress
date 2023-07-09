@@ -11,22 +11,22 @@ sudo chmod +x /usr/local/bin/docker-compose
 # EFS
 sudo yum install amazon-efs-utils -y
 sudo mkdir -m 666 /home/ec2-user/efs
-sudo echo 'id_EFS   /home/ec2-user/efs    efs     defaults,_netdev    0   0' | sudo tee -a /etc/fstab
+sudo echo "${ID_EFS}   /home/ec2-user/efs    efs     defaults,_netdev    0   0" | sudo tee -a /etc/fstab
 sudo mount -a
 # Cria o docker-compose.yaml
 sudo mkdir /home/ec2-user/docker-compose
 sudo echo -e "version: '3.1'\n 
 services:\n
   wordpress:\n
-    image: wordpress:5.6.0-php7.4\n
+    image: wordpress:latest\n        
     restart: always\n
     ports:\n
       - 80:80\n
     environment:\n
-      WORDPRESS_DB_HOST: Endpoint_RDS\n
-      WORDPRESS_DB_USER: usuario\n
-      WORDPRESS_DB_PASSWORD: senha\n
-      WORDPRESS_DB_NAME: nome_BD\n
+      WORDPRESS_DB_HOST: ${ENDPOINT_RDS}\n
+      WORDPRESS_DB_USER: admin\n
+      WORDPRESS_DB_PASSWORD: 12345678\n
+      WORDPRESS_DB_NAME: wordpress\n
     volumes:\n
       - /home/ec2-user/efs:/var/www/html\n
 " | sudo tee /home/ec2-user/docker-compose/docker-compose.yml

@@ -21,6 +21,14 @@ O administrador pode acessar o Bastion Host, na subnet publica,via IP público.
 # Ambiente Infra AWS com Terraform
 **Descrição:** no primeiro momento, cria-se a infraestrutura definindo o ***min_size*** e ***desired_size*** do Autoscaling em ***"0"***. Então, se pode acessar o bastion host e subir um conteiner Wordpress para configurar o site.
 Após esta configuração, deleta-se o conteiner Wordpress. Então, o AutoScaling pode ser configurado para criar instancias web-server que iniciarão com as configurações de Wordpress prontas.
+- Configurações Terraform:
+  - No arquivo *terraform.tfvars*, editar:
+    - Região e perfil AWS;
+    - IP do administrador. É o único IP de acesso ao Bastion Host;
+    - Credenciais do banco de dados RDS;
+    - Nome do arquivo da chave pública;
+  - No diretório *chaves*:
+    - Criar e salvar nele uma chave pública. Esta chave é necessária para gerar um key pair na AWS. (Ver: [Criando uma chave pública](#criando-uma-chave-pública))
 ### Índice dos arquivos:
   - *[chaves](/terraform/chaves)* => diretório: contém a chave pública para criar key pair na AWS
   - *[autoscaling.tf](/terraform/autoscaling.tf)* => AutoScaling Group; Launch Configuration; Associação AutoScaling-Target Group
@@ -39,6 +47,13 @@ Após esta configuração, deleta-se o conteiner Wordpress. Então, o AutoScalin
 O script "userdata-launch-conf.sh" é executado nas instancias webserver do AutoScaling.
 - *[userdata-instancia.sh](/userdata-instancia.sh)* => Instala Docker Engine e Docker-Compose; monta EFS; cria o arquivo docker-compose.yml.
 - *[userdata-launch-conf.sh](/userdata-launch-conf.sh)* => inicia um conteiner docker-compose com o site Wordpress.
+### Modo de acesso ao ambiente:
+- Acesso SSH ao Bastion Host:
+  - Na máquina do IP de administrador, acessar o diretório onde foi salva a private key;
+  - Executar: *ssh -i private_key ec2-user@IP_Bastion_Host*
+- Acesso SSH às instâncias web-server:
+  - Na máquina Bastion Host, criar um arquivo *private_key* e copiar para ele a chave privada;
+  - Executar: *ssh -i private_key ec2-user@IP_do_Web_Server*
 ### docker-compose.yml:
 **Arquivo [docker-compose.yml:](/docker-compose.yml)** 
 - Cria um conteiner com a Docker Image do Wordpress mais recente. 
@@ -106,3 +121,16 @@ O script "userdata-launch-conf.sh" é executado nas instancias webserver do Auto
 |      NFS      |      TCP      |       2049     | SG-Bastion-Host | 
 ### Árvore de diretórios:
 ![arvore-diretorios](https://github.com/MuriloScheunemann/Compass2-Docker-Wordpress/assets/122695407/39793f97-c221-47a5-9558-b7884b08a0c7)
+## Criando uma chave pública
+Na seção de "Configurações Terraform, foi mencionado que é necessária uma chave pública para criar uma key pair na AWS. O tutorial a seguir mostra como gerá-la:
+### Com Puttygen:
+* Acesso SSH com máquina Windows, via Putty:
+1. Abrir o Puttygen; selecionar tipo RSA, 2048 bits(outros valores funcionam também, mas este é o padrão);
+2. Clicar em 'generate' para gerar uma nova chave;
+3. Após a geração da chave, salvar a public key no diretório "chaves" do diretório "terraform" e salvar a private key num local seguro na máquina local;
+  + A chave pública será usada pelo Terraform para gerar uma nova key pair na AWS, enquanto a chave privada será usada para acessar as instâncias EC2 via SSH
+### Com ssh-keygen:
+* Acesso SSH com máquina Linux, via OpenSSH:
+1. No terminal, executar: ssh-keygen -t rsa -b 2048;
+2. Salvar as chaves criadas na máquina local (por padrão, serão salvas em .ssh, no diretório home do usuário que criou. Exemplo: usuário = murilo --> /home/murilo/.ssh/);
+3. Copiar a chave pública id_rsa.pub para o diretório "chaves" do diretório "terraform"

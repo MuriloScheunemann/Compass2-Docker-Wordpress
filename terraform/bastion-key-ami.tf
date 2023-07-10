@@ -1,13 +1,13 @@
-# Bastion Host, AMI, keys, Elastic IP
+# key pair
 resource "aws_key_pair" "KEY-wordpress" {
   key_name   = "key-wordpress"
   public_key = file("./chaves/${var.public_key}")
 }
 
+# Instancia bastion host
 resource "aws_instance" "EC2-bastion-host" {
-  # depends_on = [ aws_db_instance.RDS-wordpress ]
   ami                         = "ami-04823729c75214919"
-  associate_public_ip_address = true # eip
+  associate_public_ip_address = true 
   availability_zone           = "us-east-1a"
   instance_type               = "t3.micro"
   key_name                    = aws_key_pair.KEY-wordpress.key_name
@@ -30,17 +30,10 @@ resource "aws_instance" "EC2-bastion-host" {
   }
 }
 
+# AMI
 resource "aws_ami_from_instance" "AMI-wordpress" {
   name               = "AMI-wordpress"
   source_instance_id = aws_instance.EC2-bastion-host.id
-  # tags = {
-  #   Name       = "PB Senac"
-  #   CostCenter = "C092000004"
-  #   Project    = "PB Senac"
-  # }
 }
 
 
-# resource "aws_eip" "name" {
-
-# }

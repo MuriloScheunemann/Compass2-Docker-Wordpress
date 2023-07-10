@@ -28,7 +28,7 @@ resource "aws_alb_target_group" "TARGETGROUP-wordpress" {
   health_check {
     path     = "/"
     protocol = "HTTP"
-    matcher  = "200,301,302"
+    # matcher  = "200,301,302"
   }
   vpc_id = aws_vpc.vpc-wordpress.id
 }

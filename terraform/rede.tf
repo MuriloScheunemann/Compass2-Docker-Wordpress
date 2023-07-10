@@ -1,8 +1,7 @@
-# VPC, Subnets, IG, NAT, Rotas, EFS, Mount Targets
 # VPC
 resource "aws_vpc" "vpc-wordpress" {
   cidr_block           = "10.0.0.0/16"
-  enable_dns_hostnames = true #Para poder montar o EFS
+  enable_dns_hostnames = true  #Para poder montar o EFS
   tags = {
     "Name" = "VPC-wordpress"
   }
@@ -52,7 +51,6 @@ resource "aws_internet_gateway" "igw" {
 
 # IP elástico (necessario para o NAT gateway)
 resource "aws_eip" "elastic-ip-nat" {
-
 }
 
 # NAT Gateway
@@ -92,8 +90,12 @@ resource "aws_route_table" "tab-priv-wordpress" {
 }
 
 # Associações das subnets as tabelas de rotas
-resource "aws_route_table_association" "public-route-asssociation" {
+resource "aws_route_table_association" "public-1a-route-asssociation" {
   subnet_id      = aws_subnet.sub-public-1a.id
+  route_table_id = aws_route_table.tab-pub-wordpress.id
+}
+resource "aws_route_table_association" "public-1b-route-asssociation" {
+  subnet_id      = aws_subnet.sub-public-1b.id
   route_table_id = aws_route_table.tab-pub-wordpress.id
 }
 resource "aws_route_table_association" "private-1a-route-association" {

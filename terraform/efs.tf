@@ -4,7 +4,7 @@ resource "aws_efs_file_system" "efs-wordpress" {
     Name = "EFS-wordpress"
   }
 }
-#Mount Targets                                      OBS: se o Bastion não conseguir montar é problema aqui
+#Mount Targets                                     
 resource "aws_efs_mount_target" "mountTarget-1a" {
   file_system_id  = aws_efs_file_system.efs-wordpress.id
   subnet_id       = aws_subnet.sub-private-1a.id

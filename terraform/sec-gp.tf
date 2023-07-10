@@ -1,4 +1,4 @@
-# SG: instancias, Mount Targets, RDS, Load Balancer, Bastion Host
+# SG: 1.instancias, 2.Bastion Host, 3.RDS, 4.Mount Targets, 5.Load Balancer
 # Instancias do AutoScaling Group
 resource "aws_security_group" "SG-instances" {
   name        = "SG-instancias"
@@ -137,13 +137,6 @@ resource "aws_security_group" "SG-load-balancer" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  # ingress {
-  #   description = "HTTPS"
-  #   from_port   = 443
-  #   to_port     = 443
-  #   protocol    = "tcp"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  # }
 
   egress {
     from_port   = 0

@@ -16,7 +16,7 @@ resource "aws_db_instance" "RDS-wordpress" {
 # Grupo de subnets do RDS (para associar o RDS à VPC)
 resource "aws_db_subnet_group" "RDS-subnet-group" {
   name       = "rds-subnet-group"
-  subnet_ids = [aws_subnet.sub-public-1a.id, aws_subnet.sub-private-1a.id, aws_subnet.sub-private-1b.id]
+  subnet_ids = [aws_subnet.sub-public-1a.id, aws_subnet.sub-public-1b.id, aws_subnet.sub-private-1a.id, aws_subnet.sub-private-1b.id]
   tags = {
     Name = "RDS-subnet-group"
   }
